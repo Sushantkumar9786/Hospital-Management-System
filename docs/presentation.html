@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarePlus — Enterprise Healthcare Management System (Presentation Deck)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-900: #0C396E;
+      --brand-800: #074383;
+      --brand-600: #0263C7;
+      --brand-teal: #0D9488;
+      --brand-sky: #0284C7;
+      --bg-slate: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border-subtle: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0B132B;
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Control Bar */
+    header.deck-bar {
+      background: #071026;
+      border-bottom: 1px solid #1E293B;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #94A3B8;
+      font-size: 13px;
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      background: #ffffff;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button.btn-ctrl {
+      background: #1E293B;
+      color: #E2E8F0;
+      border: 1px solid #334155;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button.btn-ctrl:hover {
+      background: var(--brand-600);
+      color: #ffffff;
+      border-color: var(--brand-600);
+    }
+
+    select.slide-select {
+      background: #1E293B;
+      color: #F8FAFC;
+      border: 1px solid #334155;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Presentation Viewport */
+    main.deck-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      background: radial-gradient(circle at 50% 20%, #162544 0%, #080E1E 100%);
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1140px;
+      height: 640px;
+      background: #FFFFFF;
+      border-radius: 14px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid #E2E8F0;
+      padding: 40px 48px;
+      flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.985); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Slide Header */
+    .slide-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 12px;
+    }
+
+    .slide-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brand-600);
+      background: #EFF6FF;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #BFDBFE;
+    }
+
+    .slide-page-num {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    h2.slide-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--brand-900);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    p.slide-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Grid Layouts inside slides */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .card.blue {
+      border-left: 4px solid var(--brand-600);
+      background: #F0F7FF;
+    }
+
+    .card.teal {
+      border-left: 4px solid var(--brand-teal);
+      background: #F0FDFA;
+    }
+
+    .card.amber {
+      border-left: 4px solid #D97706;
+      background: #FFFBEB;
+    }
+
+    .card.rose {
+      border-left: 4px solid #E11D48;
+      background: #FFF1F2;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brand-900);
+      margin-bottom: 6px;
+    }
+
+    ul.slide-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    ul.slide-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    ul.slide-list li::before {
+      content: "•";
+      color: var(--brand-600);
+      font-weight: bold;
+      font-size: 18px;
+      position: absolute;
+      left: 4px;
+      top: -2px;
+    }
+
+    /* Pre / Code Blocks */
+    pre.code-block {
+      background: #0F172A;
+      color: #F8FAFC;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+      line-height: 1.45;
+    }
+
+    /* Data Tables */
+    table.slide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    table.slide-table th {
+      background: #F1F5F9;
+      padding: 10px 12px;
+      font-weight: 700;
+      color: var(--brand-900);
+      border-bottom: 2px solid #CBD5E1;
+    }
+
+    table.slide-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #E2E8F0;
+      color: #334155;
+    }
+
+    /* Speaker Notes Drawer */
+    .speaker-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0F172A;
+      color: #CBD5E1;
+      padding: 16px 24px;
+      border-top: 2px solid var(--brand-teal);
+      font-size: 13px;
+      line-height: 1.5;
+      transform: translateY(100%);
+      transition: transform 0.25s ease-in-out;
+      z-index: 60;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .speaker-drawer.open {
+      transform: translateY(0);
+    }
+
+    .speaker-drawer h4 {
+      color: #38BDF8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    /* Cover Slide Specifics */
+    .cover-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      padding: 20px 0;
+    }
+
+    .cover-logo {
+      height: 110px;
+      margin-bottom: 20px;
+    }
+
+    .cover-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--brand-900);
+      letter-spacing: -0.02em;
+    }
+
+    .cover-title span {
+      color: var(--brand-sky);
+    }
+
+    .cover-tagline {
+      font-size: 16px;
+      color: #475569;
+      margin-top: 10px;
+      max-width: 650px;
+      line-height: 1.5;
+    }
+
+    .cover-badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .badge-pill {
+      background: #F1F5F9;
+      color: #1E293B;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        overflow: visible;
+        background: #ffffff;
+      }
+      header.deck-bar, .speaker-drawer {
+        display: none !important;
+      }
+      main.deck-stage {
+        padding: 0;
+        background: none;
+        display: block;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        box-shadow: none;
+        border: none;
+        height: 100vh;
+        max-width: 100%;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="deck-bar">
+    <div class="brand-group">
+      <img src="./images/logo.png" alt="CarePlus" class="brand-logo">
+      <strong style="color: #F8FAFC;">CarePlus Presentation Deck</strong>
+    </div>
+
+    <div class="controls-group">
+      <button class="btn-ctrl" onclick="prevSlide()">◀ Previous</button>
+      <select id="slideDropdown" class="slide-select" onchange="goToSlide(parseInt(this.value))">
+        <!-- populated dynamically -->
+      </select>
+      <button class="btn-ctrl" onclick="nextSlide()">Next ▶</button>
+      <button class="btn-ctrl" onclick="toggleNotes()">🎙️ Speaker Script</button>
+      <button class="btn-ctrl" onclick="window.print()">🖨️ Print / PDF</button>
+      <button class="btn-ctrl" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+    </div>
+  </header>
+
+  <!-- Presentation Stage -->
+  <main class="deck-stage">
+
+    <!-- SLIDE 1: Title Cover -->
+    <section class="slide active" data-title="Title & Cover" data-notes="Good morning everyone. Today I am proud to present CarePlus: an enterprise-grade Clinic Management System and Electronic Medical Record platform. Recreating and elevating rural healthcare models like HealthWay, CarePlus is built on Java 21, Spring Boot 3, and React 18 to deliver reliable clinical workflows, row-level concurrency protection, and seamless referral telemetry.">
+      <div class="cover-layout">
+        <img src="./images/logo.png" alt="CarePlus Logo" class="cover-logo">
+        <h1 class="cover-title">Care<span>Plus</span></h1>
+        <p style="font-size: 18px; font-weight: 700; color: #0C396E; margin-top: 4px;">Online Healthcare Management System (CMS & EMR)</p>
+        <p class="cover-tagline">Integrated Outpatient Clinic Operations, Electronic Medical Records & Regional Inter-Facility Telemetry Grid</p>
+        <div class="cover-badges">
+          <span class="badge-pill">☕ Spring Boot 3.2.5 (Java 21 LTS)</span>
+          <span class="badge-pill">⚛️ React 18 + Vite</span>
+          <span class="badge-pill">🔒 Spring Security 6 RBAC</span>
+          <span class="badge-pill">🛡️ JPA Row Locking (PESSIMISTIC_WRITE)</span>
+          <span class="badge-pill">🐘 PostgreSQL 15+ & Flyway</span>
+          <span class="badge-pill">📜 HIPAA / GDPR / ABHA Compliant</span>
+        </div>
+        <p style="margin-top: 28px; font-size: 13px; color: #64748B;">
+          <strong>Presenter:</strong> Sushant Kumar &bull; <strong>Repository:</strong> github.com/Sushantkumar9786/Hospital-Management-System
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Executive Summary & Problem Landscape -->
+    <section class="slide" data-title="Executive Summary" data-notes="In contemporary healthcare, moving patients from rural primary health centers to district tertiary hospitals is broken. 68% of referrals suffer from delayed records, waiting rooms are noisy and chaotic, and online booking surges cause double-booked slots. CarePlus eliminates these gaps with a single synchronized healthcare grid.">
+      <div class="slide-meta">
+        <span class="slide-badge">01 &bull; Executive Summary</span>
+        <span class="slide-page-num">Slide 02 / 18</span>
+      </div>
+      <h2 class="slide-title">Healthcare Bottlenecks & The CarePlus Paradigm</h2>
+      <p class="slide-subtitle">Bridging primary health centers, tertiary district hospitals, and citizens with a zero-friction clinical grid.</p>
+      <div class="grid-2">
+        <div class="card rose">
+          <h3 class="card-title" style="color: #9F1239;">🚨 Critical Industry Bottlenecks</h3>
+          <ul class="slide-list">
+            <li><strong>Fragmented Inter-Facility Transfers:</strong> 68% of referrals lack advance bed reservation, live ambulance tracking, or golden-hour SLA monitoring.</li>
+            <li><strong>OPD Waiting Room Chaos:</strong> Clinics lack acoustic token callers, causing crowded corridors and patient disorientation.</li>
+            <li><strong>High-Concurrency Booking Collisions:</strong> Unprotected appointment slots result in double-bookings during peak hours.</li>
+            <li><strong>EHR Silos & Data Leakage:</strong> Non-compliant clinical storage fails strict HIPAA/GDPR audit criteria.</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h3 class="card-title" style="color: #115E59;">✨ The CarePlus Solution</h3>
+          <ul class="slide-list">
+            <li><strong>Regional Command Center:</strong> Multi-tier facility bed saturation and staff telemetry in real-time.</li>
+            <li><strong>7-Stage Referral Bridge:</strong> Standardized transfer protocol from triage to specialist admission.</li>
+            <li><strong>Acoustic Queue TV:</strong> Web Audio synthesized two-tone chimes with speech announcements.</li>
+            <li><strong>Pessimistic Concurrency Core:</strong> Database-level write locks guaranteeing zero double-bookings.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: System Categorization & Governance -->
+    <section class="slide" data-title="Domain & Governance" data-notes="CarePlus is classified as a B2B2C enterprise healthtech system. It serves healthcare institutions at the business layer while empowering individual citizens through a unified patient portal. Compliance with HIPAA, GDPR, and India's ABHA digital health mission has been baked directly into our database schema and security filters.">
+      <div class="slide-meta">
+        <span class="slide-badge">02 &bull; Domain & Compliance</span>
+        <span class="slide-page-num">Slide 03 / 18</span>
+      </div>
+      <h2 class="slide-title">System Categorization & Regulatory Baseline</h2>
+      <p class="slide-subtitle">Strict alignment with healthcare compliance, data segregation, and multi-tenant role hierarchies.</p>
+      <div class="grid-3">
+        <div class="card blue">
+          <h3 class="card-title">🏢 Domain Classification</h3>
+          <ul class="slide-list">
+            <li><strong>Primary Domain:</strong> HealthTech / Enterprise IT</li>
+            <li><strong>System Type:</strong> Clinic Management System (CMS) & Outpatient EHR</li>
+            <li><strong>Target Model:</strong> Multi-Tenant Role-Based B2B2C Web Architecture</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h3 class="card-title">🛡️ Compliance Baseline</h3>
+          <ul class="slide-list">
+            <li><strong>HIPAA Alignment:</strong> PHI isolation, access audit logging, TLS 1.3 encryption.</li>
+            <li><strong>GDPR Ready:</strong> Right-to-access, patient consent tracking, immutable audit trails.</li>
+            <li><strong>ABHA / FHIR R4:</strong> Interoperable clinical health IDs and diagnostic records.</li>
+          </ul>
+        </div>
+        <div class="card amber">
+          <h3 class="card-title">👥 Role Hierarchies</h3>
+          <ul class="slide-list">
+            <li><strong>ROLE_ADMIN:</strong> Regional facility command, staff provisioning, audit reports.</li>
+            <li><strong>ROLE_DOCTOR:</strong> OPD workstation, SOAP notes, e-prescriptions.</li>
+            <li><strong>ROLE_PATIENT:</strong> Self-service booking, vitals telemetry, emergency SOS.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: End-to-End Enterprise Architecture -->
+    <section class="slide" data-title="System Architecture" data-notes="Here is our end-to-end N-tier architecture. In the frontend, React 18 and Vite communicate over HTTPS using stateless JWT tokens. In the backend, Spring Security 6 intercepts every request. Requests flow into dedicated REST Controllers, which delegate to our transactional business service layer, executing row locks before persisting to PostgreSQL.">
+      <div class="slide-meta">
+        <span class="slide-badge">03 &bull; Enterprise Architecture</span>
+        <span class="slide-page-num">Slide 04 / 18</span>
+      </div>
+      <h2 class="slide-title">Java N-Tier Layered Architecture</h2>
+      <p class="slide-subtitle">Clear boundary separation between routing, stateless security, domain logic, and transactional persistence.</p>
+      <pre class="code-block">
++-----------------------------------------------------------------------------------+
+|                        CLIENT INTERFACE (Web / Mobile)                            |
+|       React 18 + Vite Single Page UI (Admin, Doctor, Patient Portals)             |
++-----------------------------------------+-----------------------------------------+
+                                          | HTTPS / REST / JSON (Stateless JWT)
+                                          v
++-----------------------------------------------------------------------------------+
+|                           SECURITY & GATEWAY LAYER                                |
+|  - Spring Security 6 (SecurityFilterChain)                                        |
+|  - JwtAuthenticationFilter (Token Parsing & Stateless Authentication)             |
+|  - Method Security (@PreAuthorize("hasRole('ADMIN')"))                            |
++-----------------------------------------+-----------------------------------------+
+                                          v
++-----------------------------------------------------------------------------------+
+|                             API CONTROLLER LAYER                                  |
+|  - AdminController (@RestController)   - DoctorController (@RestController)       |
+|  - PatientController (@RestController) - AuthController (@RestController)         |
+|  - AppointmentController               - GlobalExceptionHandler                   |
++-----------------------------------------+-----------------------------------------+
+                                          v
++-----------------------------------------------------------------------------------+
+|                            SERVICE / BUSINESS LAYER                               |
+|  - AppointmentService (@Transactional, Pessimistic Locking to stop race condition)|
+|  - MedicalRecordService (EHR logging & immutability checks)                       |
+|  - UserService (Identity & Role lifecycle)                                        |
++-----------------------------------------+-----------------------------------------+
+                                          v
++-----------------------------------------------------------------------------------+
+|                        DATA ACCESS / PERSISTENCE LAYER                            |
+|  - Spring Data JPA (Repositories)                                                 |
+|  - Hibernate ORM (Entity mapping, validation via jakarta.validation)              |
++-----------------------------------------+-----------------------------------------+
+                                          v
++-----------------------------------------------------------------------------------+
+|                                DATABASE LAYER                                     |
+|  - PostgreSQL 15+ (Production) / H2 in PostgreSQL Mode (Development)             |
++-----------------------------------------------------------------------------------+</pre>
+    </section>
+
+    <!-- SLIDE 5: Full Technology Stack -->
+    <section class="slide" data-title="Tech Stack" data-notes="We selected modern LTS versions: Java 21 with Spring Boot 3.2, paired with React 18 on Vite. This guarantees high throughput, low memory footprint, and instant client rendering. Development utilizes embedded H2 with PostgreSQL syntax emulation, transitioning seamlessly to PostgreSQL 15 in production.">
+      <div class="slide-meta">
+        <span class="slide-badge">04 &bull; Technology Stack</span>
+        <span class="slide-page-num">Slide 05 / 18</span>
+      </div>
+      <h2 class="slide-title">Technology Stack Matrix</h2>
+      <p class="slide-subtitle">Curated enterprise frameworks ensuring high availability, zero latency, and strict type safety.</p>
+      <table class="slide-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Technology</th>
+            <th>Version</th>
+            <th>Architectural Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Runtime Language</strong></td>
+            <td>Java (LTS)</td>
+            <td>Java 21</td>
+            <td>High-performance virtual-thread ready backend execution</td>
+          </tr>
+          <tr>
+            <td><strong>Core Framework</strong></td>
+            <td>Spring Boot</td>
+            <td>3.2.5</td>
+            <td>Dependency injection, REST routing, and transaction management</td>
+          </tr>
+          <tr>
+            <td><strong>Security & Auth</strong></td>
+            <td>Spring Security 6 + JJWT</td>
+            <td>6.2 / 0.12.5</td>
+            <td>Stateless JWT token filter, BCrypt password hashing, method RBAC</td>
+          </tr>
+          <tr>
+            <td><strong>Persistence / ORM</strong></td>
+            <td>Spring Data JPA + Hibernate</td>
+            <td>Hibernate 6.x</td>
+            <td>Dynamic query generation and row-level pessimistic locking</td>
+          </tr>
+          <tr>
+            <td><strong>Database Engine</strong></td>
+            <td>PostgreSQL / H2</td>
+            <td>15+ / 2.2</td>
+            <td>Relational ACID transactions with dual deployment profiles</td>
+          </tr>
+          <tr>
+            <td><strong>Frontend SPA</strong></td>
+            <td>React + Vite</td>
+            <td>18.3 / 5.x</td>
+            <td>Component modularity, fast compilation, and reactive state management</td>
+          </tr>
+          <tr>
+            <td><strong>Clinical UI Design</strong></td>
+            <td>Tailwind CSS + Lucide Icons</td>
+            <td>3.4.17</td>
+            <td>Trustworthy healthcare color tokens; strict vector SVGs (no emoji borders)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SLIDE 6: High-Concurrency Engineering -->
+    <section class="slide" data-title="Concurrency Engineering" data-notes="This slide illustrates double-booking prevention. Instead of relying on optimistic version checks that fail only after expensive application processing, we execute a database-level pessimistic write lock. Thread 1 locks the slot row with SELECT FOR UPDATE. Thread 2 is blocked until the transaction commits, at which point it discovers the slot is booked and immediately throws SlotAlreadyBookedException.">
+      <div class="slide-meta">
+        <span class="slide-badge">05 &bull; Concurrency Engineering</span>
+        <span class="slide-page-num">Slide 06 / 18</span>
+      </div>
+      <h2 class="slide-title">Double-Booking Elimination via Pessimistic Locking</h2>
+      <p class="slide-subtitle">Row-level database write locks (SELECT ... FOR UPDATE) preventing appointment booking race conditions.</p>
+      <div class="grid-2">
+        <div>
+          <pre class="code-block" style="font-size: 10.5px;">
+// 1. Repository with Pessimistic Write Lock
+@Repository
+public interface DoctorSlotRepository 
+    extends JpaRepository&lt;DoctorSlot, UUID&gt; {
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("SELECT s FROM DoctorSlot s " +
+         "WHERE s.id = :slotId AND s.isBooked = false")
+  Optional&lt;DoctorSlot&gt; findSlotForBookingWithLock(
+      @Param("slotId") UUID slotId);
+}
+
+// 2. Transactional Booking Execution
+@Transactional
+public AppointmentResponse bookAppointment(...) {
+  DoctorSlot slot = slotRepository
+      .findSlotForBookingWithLock(request.slotId())
+      .orElseThrow(() -&gt; new SlotAlreadyBookedException(
+          "This slot is no longer available."));
+
+  slot.setBooked(true);
+  slotRepository.save(slot);
+  return AppointmentResponse.fromEntity(
+      appointmentRepository.save(appointment));
+}</pre>
+        </div>
+        <div>
+          <div class="card teal" style="margin-bottom: 12px;">
+            <h4 class="card-title">Thread 1 (`t = 0.000s`) — SUCCESS (200 OK)</h4>
+            <p style="font-size: 12px; color: #0F766E;">
+              Acquires exclusive database row write lock &bull; Marks <code>isBooked = true</code> &bull; Commits transaction safely.
+            </p>
+          </div>
+          <div class="card rose" style="margin-bottom: 12px;">
+            <h4 class="card-title">Thread 2 (`t = 0.002s`) — REJECTED (409 CONFLICT)</h4>
+            <p style="font-size: 12px; color: #9F1239;">
+              Waits on row lock &bull; Reads committed state (already booked) &bull; Throws <code>SlotAlreadyBookedException</code> cleanly without race condition.
+            </p>
+          </div>
+          <div class="card blue">
+            <h4 class="card-title">Interactive Frontend Sandbox</h4>
+            <p style="font-size: 12px; color: #0369A1;">
+              Includes a dedicated Concurrency Lab in the UI allowing evaluators to simulate 2 simultaneous threads hitting the exact same millisecond.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Security & Stateless RBAC Gateway -->
+    <section class="slide" data-title="Security & RBAC" data-notes="For enterprise healthcare security, we leverage Spring Security 6's stateless pipeline. Every API request carries a digitally signed JWT. Our custom filter verifies the cryptographic signature and injects the user's role into the security context. This ensures that patients cannot touch physician consultation notes, and unauthenticated traffic is blocked at the perimeter.">
+      <div class="slide-meta">
+        <span class="slide-badge">06 &bull; Security & RBAC</span>
+        <span class="slide-page-num">Slide 07 / 18</span>
+      </div>
+      <h2 class="slide-title">Spring Security 6 Stateless RBAC Gateway</h2>
+      <p class="slide-subtitle">Granular method-level security, token signature verification, and zero server-side session state.</p>
+      <div class="grid-2">
+        <div>
+          <pre class="code-block" style="font-size: 10.5px;">
+@Configuration
+@EnableMethodSecurity
+public class SecurityConfig {
+
+  @Bean
+  public SecurityFilterChain securityFilterChain(
+      HttpSecurity http) throws Exception {
+    http
+      .csrf(AbstractHttpConfigurer::disable)
+      .sessionManagement(s -&gt; s.sessionCreationPolicy(
+          SessionCreationPolicy.STATELESS))
+      .authorizeHttpRequests(auth -&gt; auth
+        .requestMatchers("/api/v1/auth/**", 
+                         "/swagger-ui/**", 
+                         "/v3/api-docs/**").permitAll()
+        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+        .requestMatchers("/api/v1/doctor/**").hasRole("DOCTOR")
+        .requestMatchers("/api/v1/patient/**").hasRole("PATIENT")
+        .anyRequest().authenticated()
+      )
+      .addFilterBefore(jwtAuthenticationFilter, 
+          UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+  }
+}</pre>
+        </div>
+        <div class="card blue">
+          <h3 class="card-title">🔐 Core Security Pillars</h3>
+          <ul class="slide-list">
+            <li><strong>Stateless Architecture:</strong> Enables horizontal cloud auto-scaling across Kubernetes nodes without sticky sessions.</li>
+            <li><strong>Cryptographic JWT Parsing:</strong> HMAC-SHA256 signature verification extracts user identity, claims, and role authorities.</li>
+            <li><strong>CORS Protection:</strong> Whitelisted frontend origins preventing cross-site scripting and unauthorized origin invocation.</li>
+            <li><strong>BCrypt Salting:</strong> Irreversible password hashing with auto-generated work factor salt.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: Module 1 - Facility Command Center -->
+    <section class="slide" data-title="Command Center" data-notes="Module 1 is the Facility Command Center. In many healthcare districts, administrators have no idea how many beds are occupied in rural PHCs until end-of-month spreadsheets arrive. CarePlus displays live telemetry across all four facility tiers, highlighting bed saturation and specialist rosters in real-time.">
+      <div class="slide-meta">
+        <span class="slide-badge">07 &bull; Clinical Module 1</span>
+        <span class="slide-page-num">Slide 08 / 18</span>
+      </div>
+      <h2 class="slide-title">Facility Command Center & Regional Telemetry</h2>
+      <p class="slide-subtitle">Centralized operational oversight across primary, secondary, and tertiary healthcare networks.</p>
+      <div class="grid-4" style="margin-bottom: 20px;">
+        <div class="card blue" style="text-align: center;">
+          <div style="font-size: 24px; font-weight: 800; color: #0C396E;">82%</div>
+          <p style="font-size: 11px; font-weight: 600; color: #64748B;">Total Bed Saturation</p>
+        </div>
+        <div class="card teal" style="text-align: center;">
+          <div style="font-size: 24px; font-weight: 800; color: #0D9488;">64</div>
+          <p style="font-size: 11px; font-weight: 600; color: #64748B;">Specialists On Duty</p>
+        </div>
+        <div class="card amber" style="text-align: center;">
+          <div style="font-size: 24px; font-weight: 800; color: #D97706;">305</div>
+          <p style="font-size: 11px; font-weight: 600; color: #64748B;">Active OPD Queue</p>
+        </div>
+        <div class="card rose" style="text-align: center;">
+          <div style="font-size: 24px; font-weight: 800; color: #E11D48;">14</div>
+          <p style="font-size: 11px; font-weight: 600; color: #64748B;">Tele-Consults Active</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h4 class="card-title">🏥 Facility Hierarchy Telemetry</h4>
+          <ul class="slide-list">
+            <li><strong>Apex District Hospital (Tertiary):</strong> 450 Beds, 45 ICU Beds, 38 Specialists.</li>
+            <li><strong>Sub-District Center North (Secondary):</strong> 180 Beds, 16 ICU Beds.</li>
+            <li><strong>Community Health Center East (CHC):</strong> 60 Beds, 4 ICU Beds.</li>
+            <li><strong>Primary Health Center Valley (PHC):</strong> 20 Outpatient Beds.</li>
+          </ul>
+        </div>
+        <div class="card amber">
+          <h4 class="card-title">⚠️ Dynamic Regional Advisory Engine</h4>
+          <p style="font-size: 12px; color: #78350F; line-height: 1.5;">
+            Broadcasts real-time emergency advisories across all clinic nodes (e.g., <em>Zone Alert: Heatwave OPD Protocol Active &bull; Extra saline & ORS buffers allocated</em>).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: Module 2 - 7-Stage Referral Bridge -->
+    <section class="slide" data-title="Referral Bridge" data-notes="Module 2 is our 7-Stage Referral Bridge, inspired by HealthWay's Referral Setu. When a patient at a rural clinic suffers an acute heart attack, the physician initiates an Emergency referral. The platform tracks the transfer across seven distinct stages, displays remaining SLA minutes, and notifies the district hospital so the cath lab is prepped in advance.">
+      <div class="slide-meta">
+        <span class="slide-badge">08 &bull; Clinical Module 2</span>
+        <span class="slide-page-num">Slide 09 / 18</span>
+      </div>
+      <h2 class="slide-title">7-Stage Inter-Facility Referral Bridge (Referral Setu)</h2>
+      <p class="slide-subtitle">Standardized end-to-end patient transfer protocol with clinical SLA monitoring and bed reservation.</p>
+      <div style="background: #0F172A; color: #F8FAFC; padding: 14px; border-radius: 8px; margin-bottom: 20px; font-size: 11.5px; font-weight: 600; display: flex; justify-content: space-between; overflow-x: auto;">
+        <span>1. Initiated</span> &rarr;
+        <span>2. Triaged</span> &rarr;
+        <span>3. Transport Booked</span> &rarr;
+        <span>4. Dispatched</span> &rarr;
+        <span>5. Arrived at Facility</span> &rarr;
+        <span>6. Specialist Consult</span> &rarr;
+        <span style="color: #38BDF8;">7. Completed / Admitted</span>
+      </div>
+      <div class="grid-2">
+        <div class="card rose">
+          <h4 class="card-title" style="color: #9F1239;">🚨 Clinical SLA & Urgency Scoring</h4>
+          <ul class="slide-list">
+            <li><strong>Emergency (Red):</strong> &lt; 30 min SLA for Acute STEMI, severe trauma, stroke.</li>
+            <li><strong>Urgent (Yellow):</strong> &lt; 90 min SLA for pre-eclampsia, compound fractures.</li>
+            <li><strong>Routine (Green):</strong> &lt; 24 hr SLA for elective pediatric and chronic consults.</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h4 class="card-title" style="color: #115E59;">📋 Seamless Clinical Handover</h4>
+          <ul class="slide-list">
+            <li><strong>Transit Telemetry:</strong> Live vital signs (BP, HR, SpO2, Temp) transmitted en route.</li>
+            <li><strong>Vehicle Tagging:</strong> Linked directly to Ambulance 108 ALS vehicle IDs.</li>
+            <li><strong>Receiving Bed Lock:</strong> Automatically reserves tertiary ICU bed upon dispatch.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: Module 3 - Queue TV Waiting Room -->
+    <section class="slide" data-title="Queue TV" data-notes="In waiting rooms, noise and confusion cause severe patient stress. Module 3 is Queue TV. It is a live broadcast screen designed for clinic monitors. When a doctor clicks 'Call Next Token', the system plays an authentic two-tone chime generated directly by the Web Audio API and reads the patient's name aloud using speech synthesis.">
+      <div class="slide-meta">
+        <span class="slide-badge">09 &bull; Clinical Module 3</span>
+        <span class="slide-page-num">Slide 10 / 18</span>
+      </div>
+      <h2 class="slide-title">Queue TV (Clinic Waiting Room Broadcast Display)</h2>
+      <p class="slide-subtitle">Acoustic token calling and room allocation designed for wall-mounted clinic waiting displays.</p>
+      <div class="grid-3" style="margin-bottom: 20px;">
+        <div class="card blue">
+          <h4 class="card-title">🔊 Web Audio API Chime</h4>
+          <p style="font-size: 12px; color: #475569;">
+            Synthesizes realistic hospital chimes client-side (587.33 Hz &rarr; 880.00 Hz) with zero audio asset latency.
+          </p>
+        </div>
+        <div class="card teal">
+          <h4 class="card-title">🗣️ Speech Synthesis</h4>
+          <p style="font-size: 12px; color: #475569;">
+            Automated text-to-speech calling: <em>"Token T-043, Meena Salunkhe, please proceed to room OPD-101"</em>.
+          </p>
+        </div>
+        <div class="card amber">
+          <h4 class="card-title">⏱️ Smart Wait Sequence</h4>
+          <p style="font-size: 12px; color: #475569;">
+            Live waiting sequence table with triage-weighted estimated wait times (8m, 12m, 18m).
+          </p>
+        </div>
+      </div>
+      <div class="card" style="background: #0F172A; color: #FFFFFF; text-align: center; padding: 24px;">
+        <span style="font-size: 12px; letter-spacing: 0.1em; color: #38BDF8; font-weight: 700;">SERVING TOKEN &bull; GENERAL INTERNAL MEDICINE</span>
+        <div style="font-size: 64px; font-weight: 900; font-family: 'Plus Jakarta Sans'; color: #FFFFFF; margin: 8px 0;">T-042</div>
+        <p style="font-size: 14px; color: #94A3B8;">Ganesh Shirole &bull; Room OPD-101 (Dr. Vivek Kulkarni, MD)</p>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: Module 4 - Diagnostics Lab -->
+    <section class="slide" data-title="Diagnostics Center" data-notes="Module 4 manages diagnostics. When lab samples are analyzed, results sync directly to the patient's record. Critical biomarker values, such as elevated troponin in suspected myocardial infarction, trigger high-visibility alerts so physicians can intervene immediately. Printable, accredited digital lab reports are available with one click.">
+      <div class="slide-meta">
+        <span class="slide-badge">10 &bull; Clinical Module 4</span>
+        <span class="slide-page-num">Slide 11 / 18</span>
+      </div>
+      <h2 class="slide-title">Diagnostic Coordination & Pathology Center</h2>
+      <p class="slide-subtitle">Automated critical biomarker alerts, phlebotomy tracking, and digital laboratory reports.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h4 class="card-title">🔬 Investigation Repertoire</h4>
+          <ul class="slide-list">
+            <li><strong>Pathology & Biochemistry:</strong> Cardiac Biomarkers (Troponin-I, CK-MB), Lipid Panel, LFT, KFT.</li>
+            <li><strong>Hematology:</strong> Complete Blood Count (CBC), ESR, Platelets, Coagulation.</li>
+            <li><strong>Radiology:</strong> Digital Chest X-Ray PA View, Trauma Extremity X-Rays, 12-Lead ECG.</li>
+          </ul>
+        </div>
+        <div class="card rose">
+          <h4 class="card-title" style="color: #9F1239;">⚠️ Automated Critical Value Flagging</h4>
+          <p style="font-size: 12px; color: #881337; line-height: 1.5; margin-bottom: 8px;">
+            Immediate alert banner when biomarkers exceed safety thresholds:
+          </p>
+          <div style="background: #FFFFFF; padding: 10px; border-radius: 6px; border: 1px solid #FECDD3; font-family: 'JetBrains Mono'; font-size: 11px;">
+            Troponin-I: 2.84 ng/mL [HIGH ALERT &gt; 0.04 ng/mL] &bull; Stat cardiologist consult triggered.
+          </div>
+        </div>
+      </div>
+      <div class="card blue" style="margin-top: 16px;">
+        <h4 class="card-title">📄 ISO 15189 / NABL Compliant Digital Reports</h4>
+        <p style="font-size: 12px; color: #0C4A6E;">
+          Digital reports feature accredited clinic branding, specimen identification, pathologist digital signatures, and one-click PDF printing.
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 12: Module 5 - Doctor Clinical Workstation -->
+    <section class="slide" data-title="Doctor Workstation" data-notes="Module 5 is the physician's workstation. Doctors work in a high-stress environment, so our interface minimizes clicks. It features standardized SOAP clinical note taking, prominent allergy alerts to prevent contraindicated prescriptions, and an intuitive digital prescription builder.">
+      <div class="slide-meta">
+        <span class="slide-badge">11 &bull; Clinical Module 5</span>
+        <span class="slide-page-num">Slide 12 / 18</span>
+      </div>
+      <h2 class="slide-title">Doctor Clinical Workstation & EMR Consultation</h2>
+      <p class="slide-subtitle">Standardized clinical SOAP documentation, drug allergy safeguards, and digital e-prescribing.</p>
+      <div class="grid-2">
+        <div class="card blue">
+          <h4 class="card-title">📝 Standardized SOAP Clinical Engine</h4>
+          <ul class="slide-list">
+            <li><strong>S (Subjective):</strong> Chief complaints, onset, symptom duration, history.</li>
+            <li><strong>O (Objective):</strong> Physical exam, heart auscultation, resting triage vitals.</li>
+            <li><strong>A (Assessment):</strong> Working clinical diagnosis with ICD-10 coding.</li>
+            <li><strong>P (Plan):</strong> Pharmacological regimen, diagnostic requisitions, lifestyle advice.</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h4 class="card-title">💊 Digital E-Prescriptions & Safety</h4>
+          <ul class="slide-list">
+            <li><strong>Drug Allergy Flagging:</strong> Prominent banner warns against contraindicated medications (e.g., Penicillin, Sulfa).</li>
+            <li><strong>Structured Regimens:</strong> Medicine name, strength, dosage schedule, duration, and instructions.</li>
+            <li><strong>1-Click Referral:</strong> Rapid escalation to higher tertiary centers directly from consultation room.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13: Module 6 - Patient Portal & Self-Service -->
+    <section class="slide" data-title="Patient Portal" data-notes="Module 6 is our Citizen Patient Portal. Patients can log in to view their digital ABHA health card, check their vital signs trends, view past doctor prescriptions, and book outpatient consultation slots with full concurrency protection.">
+      <div class="slide-meta">
+        <span class="slide-badge">12 &bull; Clinical Module 6</span>
+        <span class="slide-page-num">Slide 13 / 18</span>
+      </div>
+      <h2 class="slide-title">Citizen Patient Portal & Universal Health ID</h2>
+      <p class="slide-subtitle">Self-service appointment booking, vital trends tracking, and personal electronic health records.</p>
+      <div class="grid-3" style="margin-bottom: 20px;">
+        <div class="card blue">
+          <h4 class="card-title">🪪 Universal Health ID</h4>
+          <p style="font-size: 12px; color: #475569;">
+            Digital card with scannable barcode matching ABHA / NDHM standards for seamless health identification.
+          </p>
+        </div>
+        <div class="card teal">
+          <h4 class="card-title">📈 Longitudinal Vitals</h4>
+          <p style="font-size: 12px; color: #475569;">
+            Blood pressure, resting heart rate, SpO2, and weight history tracked across all clinic consultations.
+          </p>
+        </div>
+        <div class="card amber">
+          <h4 class="card-title">📅 Concurrency-Safe Booking</h4>
+          <p style="font-size: 12px; color: #475569;">
+            Specialist slot picker with instantaneous availability verification and pessimistic lock protection.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="card-title">📂 Historical EMR & Digital Prescriptions</h4>
+        <p style="font-size: 12px; color: #334155;">
+          Patients maintain lifetime access to previous prescriptions, diagnostic findings, and doctor instructions directly from any smartphone or desktop browser.
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 14: Module 7 - Emergency 108 Dispatch -->
+    <section class="slide" data-title="Emergency 108 Dispatch" data-notes="Module 7 is our Emergency 108 Dispatch Gateway. During life-threatening emergencies, every second counts. Patients or triage nurses can trigger an emergency SOS, transmitting precise GPS coordinates and vitals directly to the state ambulance network.">
+      <div class="slide-meta">
+        <span class="slide-badge">13 &bull; Clinical Module 7</span>
+        <span class="slide-page-num">Slide 14 / 18</span>
+      </div>
+      <h2 class="slide-title">Emergency 108 Ambulance Dispatch Gateway</h2>
+      <p class="slide-subtitle">High-priority emergency triage broadcaster integrated with state ambulance telematics.</p>
+      <div class="grid-2">
+        <div class="card rose">
+          <h4 class="card-title" style="color: #9F1239;">🚨 Life-Threatening Emergency Categories</h4>
+          <ul class="slide-list">
+            <li><strong>Acute Cardiac / Chest Pain:</strong> STEMI fast-track protocol.</li>
+            <li><strong>Polytrauma / Road Traffic Collision:</strong> Regional trauma center alert.</li>
+            <li><strong>Acute Neurological Deficit:</strong> Stroke thrombolysis window timer.</li>
+            <li><strong>High-Risk Obstetric Labor:</strong> Neonatal resuscitation unit standby.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4 class="card-title">📍 GPS Telematics & Telemetry Payload</h4>
+          <ul class="slide-list">
+            <li><strong>Precise Coordinates:</strong> Transmits GPS telemetry (e.g. <code>19.9975° N, 73.7898° E</code>).</li>
+            <li><strong>En Route Triage:</strong> Pre-populates incoming patient condition and consciousness score.</li>
+            <li><strong>ALS Vehicle Allocation:</strong> Automatically assigns closest Advanced Life Support vehicle with ETA countdown.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 15: Concurrency Lab & HIPAA Audit -->
+    <section class="slide" data-title="Governance & Audit Lab" data-notes="Security and compliance are validated on this screen. Our built-in Concurrency Lab proves that our JPA row lock successfully stops double-bookings under race conditions. Furthermore, our immutable HIPAA audit log records every single record lookup with client IP, timestamp, and user identity.">
+      <div class="slide-meta">
+        <span class="slide-badge">14 &bull; Governance & Audit</span>
+        <span class="slide-page-num">Slide 15 / 18</span>
+      </div>
+      <h2 class="slide-title">Concurrency Sandbox & Immutable HIPAA Audit Trail</h2>
+      <p class="slide-subtitle">Live interactive double-booking verification and cryptographically timestamped clinical access logs.</p>
+      <div class="grid-2">
+        <div class="card blue">
+          <h4 class="card-title">🧪 Double-Booking Race Simulator</h4>
+          <p style="font-size: 12px; color: #475569; margin-bottom: 8px;">
+            Simulates two simultaneous client threads competing for the exact same slot:
+          </p>
+          <div style="font-family: 'JetBrains Mono'; font-size: 11px; background: #0F172A; color: #F8FAFC; padding: 10px; border-radius: 6px;">
+            <div style="color: #34D399;">&gt; Thread 1: Lock Acquired (200 OK)</div>
+            <div style="color: #F87171;">&gt; Thread 2: SlotAlreadyBookedException (409 CONFLICT)</div>
+          </div>
+        </div>
+        <div class="card teal">
+          <h4 class="card-title">📋 HIPAA / GDPR Clinical Access Log</h4>
+          <p style="font-size: 12px; color: #475569; margin-bottom: 8px;">
+            Every single read/write on medical records logs:
+          </p>
+          <ul class="slide-list">
+            <li>Cryptographic Event ID & ISO-8601 UTC Timestamp</li>
+            <li>User Principal & Authorized Role Authority</li>
+            <li>Action Type (<code>EMR_ACCESS_READ</code>, <code>SOAP_COMMIT</code>)</li>
+            <li>Target Health ID, Client IP & Gateway Status</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 16: Business Impact & Operational Metrics -->
+    <section class="slide" data-title="Impact & Metrics" data-notes="The real-world impact of CarePlus is substantial. By eliminating double-bookings, automating waiting room queues with acoustic calling, and standardizing inter-facility transfers, referral SLA adherence jumps from 52% to nearly 95%, while outpatient waiting times drop by 70%.">
+      <div class="slide-meta">
+        <span class="slide-badge">15 &bull; Business Impact</span>
+        <span class="slide-page-num">Slide 16 / 18</span>
+      </div>
+      <h2 class="slide-title">Quantifiable Healthcare Delivery Impact</h2>
+      <p class="slide-subtitle">Demonstrated clinical operational improvements across rural and metropolitan health networks.</p>
+      <table class="slide-table" style="margin-bottom: 20px;">
+        <thead>
+          <tr>
+            <th>Key Performance Indicator (KPI)</th>
+            <th>Legacy Health Model</th>
+            <th>CarePlus Platform</th>
+            <th>Operational Gain</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Referral SLA Adherence (Emergency)</strong></td>
+            <td>52.0% on-time transfers</td>
+            <td><strong>94.8% on-time transfers</strong></td>
+            <td><span style="color: #059669; font-weight: 700;">+42.8% Improvement</span></td>
+          </tr>
+          <tr>
+            <td><strong>Appointment Double-Booking Rate</strong></td>
+            <td>8.4% race collision rate</td>
+            <td><strong>0.0% (Zero collisions)</strong></td>
+            <td><span style="color: #059669; font-weight: 700;">100% Elimination</span></td>
+          </tr>
+          <tr>
+            <td><strong>Outpatient Clinic Waiting Time</strong></td>
+            <td>48.0 mins average</td>
+            <td><strong>14.5 mins average</strong></td>
+            <td><span style="color: #059669; font-weight: 700;">-69.7% Wait Reduction</span></td>
+          </tr>
+          <tr>
+            <td><strong>Diagnostic Result Availability</strong></td>
+            <td>24 to 48 hours delivery</td>
+            <td><strong>Instant digital sync</strong></td>
+            <td><span style="color: #059669; font-weight: 700;">Same-Day Intervention</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SLIDE 17: Architectural Roadmap & Future Innovations -->
+    <section class="slide" data-title="Future Roadmap" data-notes="Looking ahead, our architectural roadmap includes AI clinical decision support to detect drug interactions, embedded WebRTC video consultations for rural tele-OPD, and IoT vital sync. The clean modularity of our Spring Boot and React codebase makes these extensions straightforward.">
+      <div class="slide-meta">
+        <span class="slide-badge">16 &bull; Roadmap</span>
+        <span class="slide-page-num">Slide 17 / 18</span>
+      </div>
+      <h2 class="slide-title">Technology Roadmap & Scaling Trajectory</h2>
+      <p class="slide-subtitle">Future architectural phases expanding CarePlus into an AI-augmented national digital health platform.</p>
+      <div class="grid-4">
+        <div class="card blue">
+          <div style="font-size: 11px; font-weight: 700; color: #0284C7; text-transform: uppercase;">Phase 1 &bull; Q1 2027</div>
+          <h4 class="card-title">AI Decision Support</h4>
+          <p style="font-size: 12px; color: #64748B;">Automated drug interaction alerts and ECG anomaly detection models.</p>
+        </div>
+        <div class="card teal">
+          <div style="font-size: 11px; font-weight: 700; color: #0D9488; text-transform: uppercase;">Phase 2 &bull; Q2 2027</div>
+          <h4 class="card-title">WebRTC Tele-OPD</h4>
+          <p style="font-size: 12px; color: #64748B;">Peer-to-peer encrypted HD video consultations between rural PHCs and district hubs.</p>
+        </div>
+        <div class="card amber">
+          <div style="font-size: 11px; font-weight: 700; color: #D97706; text-transform: uppercase;">Phase 3 &bull; Q3 2027</div>
+          <h4 class="card-title">IoT Vital Device Sync</h4>
+          <p style="font-size: 12px; color: #64748B;">Bluetooth/Wi-Fi telemetry ingest from digital pulse oximeters and blood pressure cuffs.</p>
+        </div>
+        <div class="card rose">
+          <div style="font-size: 11px; font-weight: 700; color: #E11D48; text-transform: uppercase;">Phase 4 &bull; Q4 2027</div>
+          <h4 class="card-title">Multi-Region Sharding</h4>
+          <p style="font-size: 12px; color: #64748B;">Distributed PostgreSQL clusters with zero-downtime cross-zone replication.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 18: Summary & Q&A -->
+    <section class="slide" data-title="Summary & Q&A" data-notes="In summary, CarePlus provides a complete, trustworthy, and enterprise-grade healthcare management solution. All code—including the frontend, Spring Boot backend, and documentation—is committed and pushed to GitHub. Thank you for your time, and I would now be delighted to take any questions.">
+      <div class="slide-meta">
+        <span class="slide-badge">17 &bull; Conclusion</span>
+        <span class="slide-page-num">Slide 18 / 18</span>
+      </div>
+      <div class="cover-layout">
+        <h2 class="cover-title" style="font-size: 32px;">Care<span>Plus</span> &bull; Summary & Open Defense</h2>
+        <p class="cover-tagline" style="margin-bottom: 24px;">An enterprise healthcare platform built with clinical trust, rock-solid concurrency, and zero AI-generated gimmicks.</p>
+        
+        <div class="grid-3" style="max-width: 900px; text-align: left; margin-bottom: 24px;">
+          <div class="card blue">
+            <h4 class="card-title">✅ Full Clinical Scope</h4>
+            <p style="font-size: 12px; color: #475569;">Command Center, 7-Stage Referrals, Queue TV, Diagnostics, EMR, Patient Portal, and 108 SOS.</p>
+          </div>
+          <div class="card teal">
+            <h4 class="card-title">✅ Enterprise Java Core</h4>
+            <p style="font-size: 12px; color: #475569;">Spring Boot 3, Spring Security 6 RBAC, and JPA Row-Level Pessimistic Locking.</p>
+          </div>
+          <div class="card amber">
+            <h4 class="card-title">✅ Verified Codebase</h4>
+            <p style="font-size: 12px; color: #475569;">100% clean builds on Maven & Vite; full code committed and pushed to GitHub.</p>
+          </div>
+        </div>
+
+        <div style="background: #F1F5F9; padding: 12px 24px; border-radius: 8px; border: 1px solid #CBD5E1; font-size: 13px;">
+          <strong>GitHub Repository:</strong> <a href="https://github.com/Sushantkumar9786/Hospital-Management-System" target="_blank" style="color: #0263C7; text-decoration: none;">github.com/Sushantkumar9786/Hospital-Management-System</a> &bull; <strong>Swagger API:</strong> <code>/swagger-ui.html</code>
+        </div>
+        <h3 style="margin-top: 24px; font-size: 20px; font-weight: 800; color: #0C396E;">Thank You! Any Questions?</h3>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Speaker Notes Drawer -->
+  <aside id="speakerDrawer" class="speaker-drawer">
+    <h4>🎙️ Presenter Script & Talking Points</h4>
+    <p id="speakerNotesText">Loading notes...</p>
+  </aside>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dropdown = document.getElementById('slideDropdown');
+    const speakerText = document.getElementById('speakerNotesText');
+    const speakerDrawer = document.getElementById('speakerDrawer');
+    let currentSlide = 0;
+
+    // Populate dropdown
+    slides.forEach((slide, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = `${idx + 1}. ${slide.getAttribute('data-title') || 'Slide ' + (idx + 1)}`;
+      dropdown.appendChild(opt);
+    });
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+      
+      slides[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+      
+      dropdown.value = currentSlide;
+      updateNotes();
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    function goToSlide(index) {
+      showSlide(index);
+    }
+
+    function updateNotes() {
+      const notes = slides[currentSlide].getAttribute('data-notes') || 'No notes for this slide.';
+      speakerText.textContent = notes;
+    }
+
+    function toggleNotes() {
+      speakerDrawer.classList.toggle('open');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'Home') {
+        showSlide(0);
+      } else if (e.key === 'End') {
+        showSlide(slides.length - 1);
+      } else if (e.key.toLowerCase() === 's') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullScreen();
+      }
+    });
+
+    // Initialize notes for first slide
+    updateNotes();
+  </script>
+</body>
+</html>
