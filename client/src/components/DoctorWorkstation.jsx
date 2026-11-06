@@ -8,14 +8,18 @@ import {
   CheckCircle2, 
   AlertCircle, 
   PhoneForwarded, 
-  Clock,
-  Pill,
-  Save,
-  Send
+  Clock, 
+  Pill, 
+  Save, 
+  Send,
+  Video
 } from 'lucide-react';
 import { QUEUE_ROOMS } from '../data/mockData';
+import EmergencyVideoCallModal from './EmergencyVideoCallModal';
 
-export default function DoctorWorkstation({ onOpenReferral }) {
+export default function DoctorWorkstation({ onOpenReferral, currentUser }) {
+  const doctorName = currentUser?.fullName || 'Dr. Vivek Kulkarni, MD';
+  const [isDoctorVideoOpen, setIsDoctorVideoOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState({
     name: 'Ganesh Shirole',
     age: 48,
@@ -78,7 +82,7 @@ export default function DoctorWorkstation({ onOpenReferral }) {
 
         <div className="flex items-center space-x-2">
           <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-            Physician: <strong>Dr. Vivek Kulkarni, MD</strong> (Room OPD-101)
+            Physician: <strong>{doctorName}</strong> (Room OPD-101)
           </span>
         </div>
       </div>

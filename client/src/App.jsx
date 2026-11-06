@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import CommandDashboard from './components/CommandDashboard';
 import ReferralBridge from './components/ReferralBridge';
@@ -9,10 +9,22 @@ import PatientPortal from './components/PatientPortal';
 import AdminCompliance from './components/AdminCompliance';
 import BookAppointmentModal from './components/BookAppointmentModal';
 import SOSModal from './components/SOSModal';
+import AuthPage from './components/AuthPage';
+import { getStoredUser, logoutUser } from './services/api';
 
 export default function App() {
-  const [currentRole, setCurrentRole] = useState('admin');
-  const [activeTab, setActiveTab] = useState('command');
+  const [currentUser, setCurrentUser] = useState(() => getStoredUser());
+  const [currentRole, setCurrentRole] = useState(() => {
+    const user = getStoredUser();
+    return user?.roleKey || 'patient';
+  });
+  const [activeTab, setActiveTab] = useState(() => {
+    const user = getStoredUser();
+    if (user?.roleKey === 'doctor') return 'doctor';
+    if (user?.roleKey === 'admin') return 'command';
+    return 'patient';
+  });
+
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isSOSOpen, setIsSOSOpen] = useState(false);
 
@@ -38,8 +50,47 @@ export default function App() {
     }
   ]);
 
-  // When role changes, switch default view sensibly
+  // When a user successfully logs in or signs up
+  const handleAuthSuccess = (user) => {
+    setCurrentUser(user);
+    const roleKey = user.roleKey || 'patient';
+    setCurrentRole(roleKey);
+    if (roleKey === 'doctor') {
+      setActiveTab('doctor');
+    } else if (roleKey === 'admin') {
+      setActiveTab('command');
+    } else {
+      setActiveTab('patient');
+    }
+  };
+
+  // Sign out handler
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
+  };
+
+  // Enforce role-based tab access restrictions
+  useEffect(() => {
+    if (!currentUser) return;
+    const roleKey = currentUser.roleKey || 'patient';
+
+    if (roleKey === 'doctor') {
+      const doctorAllowed = ['doctor', 'diagnostics', 'referrals', 'queuetv'];
+      if (!doctorAllowed.includes(activeTab)) {
+        setActiveTab('doctor');
+      }
+    } else if (roleKey === 'patient') {
+      if (activeTab !== 'patient') {
+        setActiveTab('patient');
+      }
+    }
+    // Admin has access to all tabs
+  }, [currentUser, activeTab]);
+
+  // Handle role change (only allowed for Admin scope)
   const handleRoleChange = (newRole) => {
+    if (currentUser?.roleKey !== 'admin') return;
     setCurrentRole(newRole);
     if (newRole === 'patient') {
       setActiveTab('patient');
@@ -54,22 +105,63 @@ export default function App() {
     setAppointments([newApt, ...appointments]);
   };
 
+  // 1. If not authenticated, first show the Sign Up / Login page for doctor and patient
+  if (!currentUser) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
+
+  // 2. Authenticated user view
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col text-slate-800">
       
-      {/* Top Header */}
+      {/* Top Header with Role Indicators and Sign Out */}
       <Header
+        currentUser={currentUser}
         currentRole={currentRole}
         setCurrentRole={handleRoleChange}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenBooking={() => setIsBookingOpen(true)}
         onOpenSOS={() => setIsSOSOpen(true)}
+        onLogout={handleLogout}
       />
 
-      {/* Main Content Area */}
+      {/* Main Content Area: Restricted by User Role */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'command' && (
+        
+        {/* DOCTOR VIEW: Doctor Workstation, Diagnostics, Queue TV, Referrals */}
+        {activeTab === 'doctor' && (currentUser.roleKey === 'doctor' || currentUser.roleKey === 'admin') && (
+          <DoctorWorkstation
+            currentUser={currentUser}
+            onOpenReferral={() => setActiveTab('referrals')}
+          />
+        )}
+
+        {/* PATIENT VIEW: Patient Health Portal */}
+        {activeTab === 'patient' && (currentUser.roleKey === 'patient' || currentUser.roleKey === 'admin') && (
+          <PatientPortal
+            currentUser={currentUser}
+            onOpenBooking={() => setIsBookingOpen(true)}
+            onOpenSOS={() => setIsSOSOpen(true)}
+            appointments={appointments}
+          />
+        )}
+
+        {/* CLINICAL SUPPORT VIEWS (Accessible to Doctor & Admin) */}
+        {activeTab === 'diagnostics' && (currentUser.roleKey === 'doctor' || currentUser.roleKey === 'admin') && (
+          <DiagnosticsCenter />
+        )}
+
+        {activeTab === 'referrals' && (currentUser.roleKey === 'doctor' || currentUser.roleKey === 'admin') && (
+          <ReferralBridge />
+        )}
+
+        {activeTab === 'queuetv' && (currentUser.roleKey === 'doctor' || currentUser.roleKey === 'admin') && (
+          <QueueTV />
+        )}
+
+        {/* ADMIN EXCLUSIVE VIEWS */}
+        {activeTab === 'command' && currentUser.roleKey === 'admin' && (
           <CommandDashboard
             setActiveTab={setActiveTab}
             onOpenBooking={() => setIsBookingOpen(true)}
@@ -78,114 +170,35 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'referrals' && (
-          <ReferralBridge />
-        )}
-
-        {activeTab === 'queuetv' && (
-          <QueueTV />
-        )}
-
-        {activeTab === 'diagnostics' && (
-          <DiagnosticsCenter />
-        )}
-
-        {activeTab === 'doctor' && (
-          <DoctorWorkstation
-            onOpenReferral={() => setActiveTab('referrals')}
-          />
-        )}
-
-        {activeTab === 'patient' && (
-          <PatientPortal
-            onOpenBooking={() => setIsBookingOpen(true)}
-            onOpenSOS={() => setIsSOSOpen(true)}
-            appointments={appointments}
-          />
-        )}
-
-        {activeTab === 'compliance' && (
+        {activeTab === 'compliance' && currentUser.roleKey === 'admin' && (
           <AdminCompliance />
         )}
+
       </main>
 
       {/* Trustworthy Enterprise Healthcare Footer */}
-      <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-10 mt-12 text-xs">
+      <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-8 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             
-            {/* Col 1: Brand & Logo */}
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <img 
-                  src="/careplus_logo.png" 
-                  alt="CarePlus Logo" 
-                  className="h-10 w-auto bg-white/90 p-1 rounded" 
-                />
-                <span className="text-base font-bold text-white font-heading">CarePlus</span>
-              </div>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Integrated Outpatient Clinic Management System (CMS) & Electronic Medical Record (EMR) Platform for Regional Health Networks.
-              </p>
-              <span className="inline-block px-2.5 py-1 rounded bg-slate-800 text-sky-400 font-mono text-[10px]">
-                HIPAA / GDPR / ABHA Compliant
-              </span>
-            </div>
-
-            {/* Col 2: Clinical Services */}
-            <div>
-              <h4 className="text-slate-200 font-bold uppercase tracking-wider mb-3 text-[11px]">
-                Platform Modules
-              </h4>
-              <ul className="space-y-2">
-                <li><button onClick={() => setActiveTab('command')} className="hover:text-white transition">Facility Command Center</button></li>
-                <li><button onClick={() => setActiveTab('referrals')} className="hover:text-white transition">7-Stage Referral Bridge</button></li>
-                <li><button onClick={() => setActiveTab('queuetv')} className="hover:text-white transition">Queue TV Waiting Room</button></li>
-                <li><button onClick={() => setActiveTab('diagnostics')} className="hover:text-white transition">Diagnostics & Pathology Lab</button></li>
-              </ul>
-            </div>
-
-            {/* Col 3: Role Workspaces */}
-            <div>
-              <h4 className="text-slate-200 font-bold uppercase tracking-wider mb-3 text-[11px]">
-                Clinical Roles
-              </h4>
-              <ul className="space-y-2">
-                <li><button onClick={() => handleRoleChange('admin')} className="hover:text-white transition">Facility Chief Health Officer</button></li>
-                <li><button onClick={() => handleRoleChange('doctor')} className="hover:text-white transition">Physician OPD Workstation</button></li>
-                <li><button onClick={() => handleRoleChange('patient')} className="hover:text-white transition">Citizen Patient Portal</button></li>
-                <li><button onClick={() => setActiveTab('compliance')} className="hover:text-white transition">HIPAA Audit Trail & Security</button></li>
-              </ul>
-            </div>
-
-            {/* Col 4: Enterprise Architecture */}
-            <div>
-              <h4 className="text-slate-200 font-bold uppercase tracking-wider mb-3 text-[11px]">
-                Technology Architecture
-              </h4>
-              <p className="text-slate-400 text-[11px] leading-relaxed mb-2">
-                Powered by Java Spring Boot 3.2+ with Spring Security 6, JPA Pessimistic Locking row concurrency, and React 18 frontend.
-              </p>
-              <div className="space-y-1 font-mono text-[10px] text-slate-500">
-                <div>Backend: Spring Boot 3.x (Java 21)</div>
-                <div>Locking: PESSIMISTIC_WRITE</div>
-                <div>Auth: Stateless JWT Token Filter</div>
+            <div className="flex items-center space-x-3">
+              <img 
+                src="/careplus_logo.png" 
+                alt="CarePlus Logo" 
+                className="h-8 w-auto bg-white/90 p-0.5 rounded" 
+              />
+              <div>
+                <span className="text-sm font-bold text-white font-heading">CarePlus</span>
+                <span className="ml-2 text-[10px] text-emerald-400 font-mono">● MySQL 8.0 Connected</span>
               </div>
             </div>
 
-          </div>
+            <div className="text-center md:text-right text-[11px] text-slate-400">
+              Logged in as <span className="font-semibold text-white">{currentUser.fullName || currentUser.username}</span> 
+              {' '}(<span className="text-sky-400 font-mono">{currentUser.roleKey?.toUpperCase()}</span>) 
+              • <button onClick={handleLogout} className="text-rose-400 hover:text-rose-300 font-semibold underline ml-1">Sign Out</button>
+            </div>
 
-          <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-            <div>
-              &copy; {new Date().getFullYear()} CarePlus Healthcare IT Systems. All rights reserved.
-            </div>
-            <div className="flex space-x-4">
-              <span>Security Policy</span>
-              <span>&bull;</span>
-              <span>HIPAA Compliance</span>
-              <span>&bull;</span>
-              <span>Data Segregation Protocol</span>
-            </div>
           </div>
         </div>
       </footer>
@@ -195,6 +208,7 @@ export default function App() {
         isOpen={isBookingOpen}
         onClose={() => setIsBookingOpen(false)}
         onBookSuccess={handleBookSuccess}
+        currentUser={currentUser}
       />
 
       <SOSModal

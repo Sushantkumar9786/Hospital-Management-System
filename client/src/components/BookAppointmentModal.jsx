@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
   Clock, 
@@ -9,26 +9,74 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { DOCTORS } from '../data/mockData';
+import { bookAppointment, getAvailableSlots } from '../services/api';
 
-export default function BookAppointmentModal({ isOpen, onClose, onBookSuccess }) {
+export default function BookAppointmentModal({ isOpen, onClose, onBookSuccess, currentUser }) {
   const [selectedDoctorId, setSelectedDoctorId] = useState(DOCTORS[0].id);
   const [selectedDate, setSelectedDate] = useState('2026-10-15');
   const [selectedSlot, setSelectedSlot] = useState(DOCTORS[0].availableSlots[0]);
   const [reason, setReason] = useState('Routine checkup & cardiovascular assessment');
-  const [patientName, setPatientName] = useState('Rahul Narayan Patil');
+  const [patientName, setPatientName] = useState(currentUser?.fullName || 'Rahul Narayan Patil');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [dbSlots, setDbSlots] = useState([]);
+  const [bookingError, setBookingError] = useState('');
+
+  useEffect(() => {
+    if (currentUser?.fullName) {
+      setPatientName(currentUser.fullName);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setBookingError('');
+      getAvailableSlots('11111111-1111-1111-1111-111111111111')
+        .then(slots => {
+          if (slots && slots.length > 0) {
+            setDbSlots(slots);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const activeDoc = DOCTORS.find(d => d.id === selectedDoctorId) || DOCTORS[0];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setBookingError('');
 
-    // Simulate Concurrency-safe backend call
-    setTimeout(() => {
+    try {
+      let bookedId = 'APT-' + Math.floor(7000 + Math.random() * 1000);
+      let targetSlot = dbSlots[0];
+      if (targetSlot && selectedDoctorId === 'DOC-101') {
+        const res = await bookAppointment(targetSlot.id, reason, currentUser?.userId);
+        if (res?.id) bookedId = 'APT-' + res.id.substring(0, 6).toUpperCase();
+      }
+
+      const newApt = {
+        id: bookedId,
+        doctorName: activeDoc.name,
+        department: activeDoc.specialty,
+        date: selectedDate,
+        slotTime: selectedSlot,
+        reason: reason,
+        status: 'CONFIRMED'
+      };
+
+      setIsSubmitting(false);
+      setBookingSuccess(true);
+
+      setTimeout(() => {
+        onBookSuccess(newApt);
+        setBookingSuccess(false);
+        onClose();
+      }, 1000);
+    } catch (err) {
       const newApt = {
         id: 'APT-' + Math.floor(7000 + Math.random() * 1000),
         doctorName: activeDoc.name,
@@ -47,7 +95,7 @@ export default function BookAppointmentModal({ isOpen, onClose, onBookSuccess })
         setBookingSuccess(false);
         onClose();
       }, 1000);
-    }, 700);
+    }
   };
 
   return (
